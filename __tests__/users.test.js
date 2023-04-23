@@ -70,6 +70,37 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
+  it('delete', async () => {
+    const userId = { id: 2 };
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `users/${userId.id}`,
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: testData.users.existing,
+      },
+    });
+
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+
+    await app.inject({
+      method: 'DELETE',
+      url: `users/${userId.id}`,
+      cookies: cookie,
+    });
+
+    const user = await models.user.query().findOne({ ...userId });
+    expect(user).toBeUndefined();
+  });
+
   afterEach(async () => {
     // Пока Segmentation fault: 11
     // после каждого теста откатываем миграции

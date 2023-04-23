@@ -18,6 +18,9 @@ export default {
           error: 'Failed to register',
           success: 'User registered successfully',
         },
+        delete: {
+          success: 'User has been successfully deleted',
+        },
       },
       authError: 'Access denied! Please login',
     },
@@ -40,6 +43,10 @@ export default {
         id: 'ID',
         email: 'Email',
         createdAt: 'Created at',
+        actions: {
+          head: 'Actions',
+          delete: 'Delete',
+        },
         new: {
           submit: 'Register',
           signUp: 'Register',

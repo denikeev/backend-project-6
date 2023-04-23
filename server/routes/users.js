@@ -28,5 +28,20 @@ export default (app) => {
       }
 
       return reply;
+    })
+    .delete('/users/:id', async (req, reply) => {
+      const { id } = req.params;
+
+      if (req.isAuthenticated() && req.user.id === Number(id)) {
+        req.logOut();
+        await app.objection.models.user.query().deleteById(id);
+        req.flash('info', i18next.t('flash.users.delete.success'));
+        reply.redirect(app.reverse('root'));
+      } else {
+        req.flash('error', i18next.t('flash.authError'));
+        reply.redirect(app.reverse('root'));
+      }
+
+      return reply;
     });
 };
