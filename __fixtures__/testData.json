@@ -6,9 +6,19 @@
       "email": "malika_hodkiewicz75@live.com",
       "password": "RLJvaIgPOnX5r03"
     },
+    "editedNew": {
+      "firstName": "Jon",
+      "lastName": "Snow",
+      "email": "malika_hodkiewicz75@live.com",
+      "password": "RLJvaIgPOnX5r03"
+    },
     "existing": {
       "email": "lawrence.kulas87@outlook.com",
       "password": "O6AvLIQL1cbzrre"
+    },
+    "existingSecond": {
+      "email": "nona_murray@yahoo.com",
+      "password": "760391e7dceb3"
     }
   }
 }

@@ -21,6 +21,11 @@ export default {
         delete: {
           success: 'User has been successfully deleted',
         },
+        edit: {
+          noAccess: 'You cannot edit or delete another user',
+          modified: 'User has been successfully changed',
+          failed: 'Unable to change user',
+        },
       },
       authError: 'Access denied! Please login',
     },
@@ -46,10 +51,14 @@ export default {
         actions: {
           head: 'Actions',
           delete: 'Delete',
+          edit: 'Edit',
         },
         new: {
           submit: 'Register',
           signUp: 'Register',
+        },
+        edit: {
+          title: 'Changing the user',
         },
       },
       welcome: {

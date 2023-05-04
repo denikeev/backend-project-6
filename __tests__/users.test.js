@@ -70,6 +70,121 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
+  it('edit', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: 'users/4/edit',
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: testData.users.existing,
+      },
+    });
+
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+
+    const responseEditPage = await app.inject({
+      method: 'GET',
+      url: 'users/2/edit',
+      cookies: cookie,
+    });
+
+    expect(responseEditPage.statusCode).toBe(200);
+  });
+
+  it('no access for edit/delete', async () => {
+    const id = 2;
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: testData.users.existingSecond,
+      },
+    });
+
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+
+    const responseEditPage = await app.inject({
+      method: 'GET',
+      url: `users/${id}/edit`,
+      cookies: cookie,
+    });
+
+    expect(responseEditPage.statusCode).toBe(302);
+
+    const responseDeleteUser = await app.inject({
+      method: 'DELETE',
+      url: `users/${id}`,
+      cookies: cookie,
+    });
+
+    expect(responseDeleteUser.statusCode).toBe(302);
+  });
+
+  it('update', async () => {
+    const params = testData.users.editedNew;
+    const responseSignInOtherUser = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: params,
+      },
+    });
+
+    const [sessionCookie] = responseSignInOtherUser.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+
+    const responseUpdateNoAccess = await app.inject({
+      method: 'PATCH',
+      url: 'users/2',
+      cookies: cookie,
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(responseUpdateNoAccess.statusCode).toBe(302);
+
+    const responseSignInCurrentUser = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: testData.users.new,
+      },
+    });
+
+    const [sessionCookieCurrent] = responseSignInCurrentUser.cookies;
+    const { name: nameCurrent, value: valueCurrent } = sessionCookieCurrent;
+    const cookie2 = { [nameCurrent]: valueCurrent };
+
+    await app.inject({
+      method: 'PATCH',
+      url: 'users/4',
+      cookies: cookie2,
+      payload: {
+        data: testData.users.editedNew,
+      },
+    });
+
+    const expected = {
+      ..._.omit(params, 'password'),
+      passwordDigest: encrypt(params.password),
+    };
+    const user = await models.user.query().findOne({ email: params.email });
+
+    expect(user).toMatchObject(expected);
+  });
+
   it('delete', async () => {
     const userId = { id: 2 };
     const response = await app.inject({

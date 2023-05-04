@@ -1,5 +1,8 @@
 extends ../layouts/application.pug
 
+block header
+  = t('layouts.application.users')
+
 block content
   table.table.table-striped
     thead
@@ -14,7 +17,8 @@ block content
           td= user.id
           td= user.email
           td= formatDate(user.createdAt)
-          td 
+          td.d-flex.flex-wrap
+            a.btn.btn-primary.me-1(href=`/users/${user.id}/edit`)= t('views.users.actions.edit')
             form(action=`users/${user.id}` method='post') 
               input(name='_method', type='hidden', value='delete')
               input(class='btn btn-danger', type='submit', value=t('views.users.actions.delete'))
