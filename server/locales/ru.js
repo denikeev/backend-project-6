@@ -35,6 +35,7 @@ export default {
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
+        statuses: 'Статусы',
       },
     },
     views: {
@@ -48,8 +49,8 @@ export default {
         id: 'ID',
         email: 'Email',
         createdAt: 'Дата создания',
+        head: 'Действия',
         actions: {
-          head: 'Действия',
           delete: 'Удалить',
           edit: 'Изменить',
         },
@@ -59,6 +60,19 @@ export default {
         },
         edit: {
           title: 'Изменение пользователя',
+        },
+      },
+      statuses: {
+        id: 'ID',
+        name: 'Наименование',
+        createdAt: 'Дата создания',
+        head: 'Действия',
+        actions: {
+          createStatus: 'Создать статус',
+          create: 'Создать',
+        },
+        new: {
+          head: 'Создание статуса',
         },
       },
       welcome: {

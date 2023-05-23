@@ -35,6 +35,7 @@ export default {
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
+        statuses: 'Statuses',
       },
     },
     views: {
@@ -48,8 +49,8 @@ export default {
         id: 'ID',
         email: 'Email',
         createdAt: 'Created at',
+        head: 'Actions',
         actions: {
-          head: 'Actions',
           delete: 'Delete',
           edit: 'Edit',
         },
@@ -59,6 +60,19 @@ export default {
         },
         edit: {
           title: 'Changing the user',
+        },
+      },
+      statuses: {
+        id: 'ID',
+        name: 'Name',
+        createdAt: 'Created at',
+        head: 'Actions',
+        actions: {
+          createStatus: 'Create a status',
+          create: 'Create',
+        },
+        new: {
+          head: 'Creating a status',
         },
       },
       welcome: {
