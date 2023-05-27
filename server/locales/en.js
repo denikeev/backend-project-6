@@ -27,6 +27,12 @@ export default {
           failed: 'Unable to change user',
         },
       },
+      statuses: {
+        create: {
+          success: 'Status successfully created',
+          error: 'Failed to create status',
+        },
+      },
       authError: 'Access denied! Please login',
     },
     layouts: {

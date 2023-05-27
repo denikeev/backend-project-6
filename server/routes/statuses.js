@@ -23,5 +23,27 @@ export default (app) => {
       req.flash('error', i18next.t('flash.authError'));
       reply.redirect(app.reverse('root'));
       return reply;
+    })
+    .post('/statuses', async (req, reply) => {
+      if (req.isAuthenticated()) {
+        const status = new app.objection.models.status();
+        status.$set(req.body.data);
+
+        try {
+          const validStatus = await app.objection.models.status.fromJson(req.body.data);
+          await app.objection.models.status.query().insert(validStatus);
+          req.flash('info', i18next.t('flash.statuses.create.success'));
+          reply.redirect(app.reverse('statuses'));
+        } catch ({ data }) {
+          req.flash('error', i18next.t('flash.statuses.create.error'));
+          reply.render('statuses/new', { status, errors: data });
+        }
+
+        return reply;
+      }
+
+      req.flash('error', i18next.t('flash.authError'));
+      reply.redirect(app.reverse('root'));
+      return reply;
     });
 };

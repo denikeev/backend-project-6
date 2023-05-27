@@ -20,5 +20,10 @@
       "email": "nona_murray@yahoo.com",
       "password": "760391e7dceb3"
     }
+  },
+  "statuses": {
+    "new": {
+      "name": "simple-status"
+    }
   }
 }
