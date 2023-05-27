@@ -50,7 +50,7 @@ describe('test statuses CRUD', () => {
     expect(responseStatuses.statusCode).toBe(200);
   });
 
-  it('new status', async () => {
+  it('new', async () => {
     const response = await app.inject({
       method: 'GET',
       url: app.reverse('newStatus'),
@@ -61,6 +61,50 @@ describe('test statuses CRUD', () => {
     const responseStatuses = await app.inject({
       method: 'GET',
       url: app.reverse('newStatus'),
+      cookies: authCookie,
+    });
+
+    expect(responseStatuses.statusCode).toBe(200);
+  });
+
+  it('create', async () => {
+    const params = testData.statuses.new;
+
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('statuses'),
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    await app.inject({
+      method: 'POST',
+      url: app.reverse('statuses'),
+      cookies: authCookie,
+      payload: {
+        data: params,
+      },
+    });
+
+    const status = await models.status.query().findOne({ name: params.name });
+
+    expect(status).toMatchObject(params);
+  });
+
+  it('edit', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: 'statuses/1/edit',
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const responseStatuses = await app.inject({
+      method: 'GET',
+      url: 'statuses/1/edit',
       cookies: authCookie,
     });
 

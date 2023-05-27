@@ -24,6 +24,19 @@ export default (app) => {
       reply.redirect(app.reverse('root'));
       return reply;
     })
+    .get('/statuses/:id/edit', async (req, reply) => {
+      const { id } = req.params;
+      const status = await app.objection.models.status.query().findOne({ id });
+
+      if (req.isAuthenticated()) {
+        reply.render('statuses/edit', { status });
+        return reply;
+      }
+
+      req.flash('error', i18next.t('flash.authError'));
+      reply.redirect(app.reverse('root'));
+      return reply;
+    })
     .post('/statuses', async (req, reply) => {
       if (req.isAuthenticated()) {
         const status = new app.objection.models.status();

@@ -45,6 +45,10 @@ export default {
       },
     },
     views: {
+      actions: {
+        delete: 'Delete',
+        edit: 'Edit',
+      },
       session: {
         new: {
           signIn: 'Login',
@@ -56,10 +60,6 @@ export default {
         email: 'Email',
         createdAt: 'Created at',
         head: 'Actions',
-        actions: {
-          delete: 'Delete',
-          edit: 'Edit',
-        },
         new: {
           submit: 'Register',
           signUp: 'Register',

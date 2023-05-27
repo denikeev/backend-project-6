@@ -45,6 +45,10 @@ export default {
       },
     },
     views: {
+      actions: {
+        delete: 'Удалить',
+        edit: 'Изменить',
+      },
       session: {
         new: {
           signIn: 'Вход',
@@ -56,10 +60,6 @@ export default {
         email: 'Email',
         createdAt: 'Дата создания',
         head: 'Действия',
-        actions: {
-          delete: 'Удалить',
-          edit: 'Изменить',
-        },
         new: {
           submit: 'Сохранить',
           signUp: 'Регистрация',
@@ -79,6 +79,9 @@ export default {
         },
         new: {
           head: 'Создание статуса',
+        },
+        edit: {
+          title: 'Изменение статуса',
         },
       },
       welcome: {
