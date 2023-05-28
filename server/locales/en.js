@@ -32,6 +32,12 @@ export default {
           success: 'Status successfully created',
           error: 'Failed to create status',
         },
+        edit: {
+          success: 'Status successfully changed',
+        },
+        delete: {
+          success: 'Status successfully deleted',
+        },
       },
       authError: 'Access denied! Please login',
     },

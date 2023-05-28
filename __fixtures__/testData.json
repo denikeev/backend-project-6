@@ -24,6 +24,12 @@
   "statuses": {
     "new": {
       "name": "simple-status"
+    },
+    "edited": {
+      "name": "edited"
+    },
+    "notEdited": {
+      "name": ""
     }
   }
 }

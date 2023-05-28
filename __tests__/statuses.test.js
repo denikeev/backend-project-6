@@ -8,6 +8,7 @@ describe('test statuses CRUD', () => {
   let models;
   let authCookie;
   const testData = getTestData();
+  const id = 1;
 
   beforeAll(async () => {
     app = fastify({
@@ -97,18 +98,73 @@ describe('test statuses CRUD', () => {
   it('edit', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: 'statuses/1/edit',
+      url: `statuses/${id}/edit`,
     });
 
     expect(response.statusCode).toBe(302);
 
     const responseStatuses = await app.inject({
       method: 'GET',
-      url: 'statuses/1/edit',
+      url: `statuses/${id}/edit`,
       cookies: authCookie,
     });
 
     expect(responseStatuses.statusCode).toBe(200);
+  });
+
+  it('update', async () => {
+    const params = testData.statuses.edited;
+    const paramsEmptyName = testData.statuses.notEdited;
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `statuses/${id}`,
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    await app.inject({
+      method: 'PATCH',
+      url: `statuses/${id}`,
+      cookies: authCookie,
+      payload: {
+        data: params,
+      },
+    });
+
+    await app.inject({
+      method: 'PATCH',
+      url: `statuses/${id}`,
+      cookies: authCookie,
+      payload: {
+        data: paramsEmptyName,
+      },
+    });
+
+    const status = await models.status.query().findOne({ name: params.name });
+
+    expect(status).toMatchObject(params);
+  });
+
+  it('delete', async () => {
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `statuses/${id}`,
+    });
+
+    expect(response.headers.location).toBe('/');
+
+    await app.inject({
+      method: 'DELETE',
+      url: `statuses/${id}`,
+      cookies: authCookie,
+    });
+
+    const status = await models.status.query().findById({ id: 1 });
+    expect(status).toBeUndefined();
   });
 
   afterAll(async () => {
