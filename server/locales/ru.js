@@ -49,9 +49,14 @@ export default {
         signUp: 'Регистрация',
         signOut: 'Выход',
         statuses: 'Статусы',
+        tasks: 'Задачи',
       },
     },
     views: {
+      common: {
+        id: 'ID',
+        name: 'Наименование',
+      },
       actions: {
         delete: 'Удалить',
         edit: 'Изменить',
@@ -63,7 +68,6 @@ export default {
         },
       },
       users: {
-        id: 'ID',
         email: 'Email',
         createdAt: 'Дата создания',
         head: 'Действия',
@@ -75,8 +79,16 @@ export default {
           title: 'Изменение пользователя',
         },
       },
+      tasks: {
+        status: 'Статус',
+        author: 'Автор',
+        executor: 'Исполнитель',
+        creationDate: 'Дата создания',
+        actions: {
+          createTask: 'Создать задачу',
+        },
+      },
       statuses: {
-        id: 'ID',
         name: 'Наименование',
         createdAt: 'Дата создания',
         head: 'Действия',

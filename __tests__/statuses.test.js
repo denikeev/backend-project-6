@@ -20,15 +20,6 @@ describe('test statuses CRUD', () => {
     models = app.objection.models;
     await knex.migrate.latest();
     await prepareData(app);
-  });
-
-  it('index', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: app.reverse('statuses'),
-    });
-
-    expect(response.statusCode).toBe(302);
 
     const responseSignIn = await app.inject({
       method: 'POST',
@@ -41,6 +32,15 @@ describe('test statuses CRUD', () => {
     const [sessionCookie] = responseSignIn.cookies;
     const { name, value } = sessionCookie;
     authCookie = { [name]: value };
+  });
+
+  it('index', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('statuses'),
+    });
+
+    expect(response.statusCode).toBe(302);
 
     const responseStatuses = await app.inject({
       method: 'GET',

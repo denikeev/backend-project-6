@@ -48,9 +48,14 @@ export default {
         signUp: 'Register',
         signOut: 'Logout',
         statuses: 'Statuses',
+        tasks: 'Tasks',
       },
     },
     views: {
+      common: {
+        id: 'ID',
+        name: 'Name',
+      },
       actions: {
         delete: 'Delete',
         edit: 'Edit',
@@ -62,7 +67,6 @@ export default {
         },
       },
       users: {
-        id: 'ID',
         email: 'Email',
         createdAt: 'Created at',
         head: 'Actions',
@@ -74,9 +78,16 @@ export default {
           title: 'Changing the user',
         },
       },
+      tasks: {
+        status: 'Status',
+        author: 'Author',
+        executor: 'Executor',
+        creationDate: 'Creation date',
+        actions: {
+          createTask: 'Create task',
+        },
+      },
       statuses: {
-        id: 'ID',
-        name: 'Name',
         createdAt: 'Created at',
         head: 'Actions',
         actions: {
