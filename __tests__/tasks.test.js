@@ -49,4 +49,25 @@ describe('test tasks CRUD', () => {
 
     expect(responseWithAuthCookie.statusCode).toBe(200);
   });
+
+  it('new', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('newTask'),
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const responseWithAuthCookie = await app.inject({
+      method: 'GET',
+      url: app.reverse('newTask'),
+      cookies: authCookie,
+    });
+
+    expect(responseWithAuthCookie.statusCode).toBe(200);
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
 });

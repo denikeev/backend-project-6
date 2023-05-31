@@ -22,6 +22,22 @@ mixin input(entity, propertyName, errors = {})
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
+mixin select(entity, propertyName, text, errors = {})
+  - propertyErrors = _.get(errors, propertyName)
+  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : 'is-invalid')
+  - selectId = getInputId(propertyName)
+  .mb-3 
+    label(for= selectId)= text 
+    select(
+      id= selectId
+      name=getInputName(propertyName)
+      class=classLine
+    )&attributes(attributes)
+      option
+      block
+    if !_.isEmpty(propertyErrors)
+      .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
+
 mixin submit(form = null)
   input(class='btn btn-primary' type='submit')&attributes(attributes)
 
@@ -29,3 +45,9 @@ mixin buttonTo(action, method)
   form(action=action, method="post")
     input(name="_method" type="hidden" value=method)
     input(type='submit')&attributes(attributes)
+
+mixin textarea(entity, propertyName, text)
+  - textareaId = getInputId(propertyName)
+  .mb-3 
+    label(for= textareaId)= text
+    textarea.form-control(id=textareaId name=getInputName(propertyName), rows="3")= _.get(entity, propertyName, '')

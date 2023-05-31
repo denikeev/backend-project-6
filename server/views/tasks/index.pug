@@ -4,7 +4,7 @@ block header
   = t('layouts.application.tasks')
 
 block content
-    a.btn.btn-primary(href='/newTask')= t('views.tasks.actions.createTask')
+    a.btn.btn-primary(href=route('newTask'))= t('views.tasks.actions.createTask')
     .table-responsive
       table.table.table-borderless.table-striped.mt-5.bg-white
         thead 

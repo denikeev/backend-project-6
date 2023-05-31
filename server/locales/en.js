@@ -83,6 +83,10 @@ export default {
         author: 'Author',
         executor: 'Executor',
         creationDate: 'Creation date',
+        new: {
+          head: 'Creating a task',
+          description: 'Description',
+        },
         actions: {
           createTask: 'Create task',
         },

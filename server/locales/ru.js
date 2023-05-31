@@ -60,6 +60,7 @@ export default {
       actions: {
         delete: 'Удалить',
         edit: 'Изменить',
+        create: 'Создать',
       },
       session: {
         new: {
@@ -84,6 +85,10 @@ export default {
         author: 'Автор',
         executor: 'Исполнитель',
         creationDate: 'Дата создания',
+        new: {
+          head: 'Создание задачи',
+          description: 'Описание',
+        },
         actions: {
           createTask: 'Создать задачу',
         },
@@ -94,7 +99,6 @@ export default {
         head: 'Действия',
         actions: {
           createStatus: 'Создать статус',
-          create: 'Создать',
         },
         new: {
           head: 'Создание статуса',
