@@ -1,6 +1,21 @@
 import i18next from 'i18next';
 import _ from 'lodash';
 
+const getTaskData = (models) => async (task) => {
+  const status = await models.status.query().findById(task.statusId);
+  const creatorUser = await models.user.query().findById(task.creatorId);
+  const creatorName = `${creatorUser.firstName} ${creatorUser.lastName}`;
+  const result = { ...task, statusName: status.name, creatorName };
+
+  if (task.executorId !== null) {
+    const executorUser = await models.user.query().findById(task.executorId);
+    const executorName = `${executorUser.firstName} ${executorUser.lastName}`;
+    return { ...result, executorName };
+  }
+
+  return result;
+};
+
 export default (app) => {
   const { models } = app.objection;
 
@@ -9,20 +24,7 @@ export default (app) => {
       if (req.isAuthenticated()) {
         const tasksRaw = await models.task.query();
 
-        const tasks = Promise.all(tasksRaw.map(async (task) => {
-          const status = await models.status.query().findById(task.statusId);
-          const creatorUser = await models.user.query().findById(task.creatorId);
-          const creatorName = `${creatorUser.firstName} ${creatorUser.lastName}`;
-          const result = { ...task, statusName: status.name, creatorName };
-
-          if (task.executorId !== null) {
-            const executorUser = await models.user.query().findById(task.executorId);
-            const executorName = `${executorUser.firstName} ${executorUser.lastName}`;
-            return { ...result, executorName };
-          }
-
-          return result;
-        }));
+        const tasks = Promise.all(tasksRaw.map(getTaskData(models)));
 
         return tasks.then((data) => {
           reply.render('tasks/index', { tasks: data });
@@ -41,6 +43,20 @@ export default (app) => {
         const users = await models.user.query();
 
         reply.render('tasks/new', { task, statuses, users });
+        return reply;
+      }
+
+      req.flash('error', i18next.t('flash.authError'));
+      reply.redirect(app.reverse('root'));
+      return reply;
+    })
+    .get('/tasks/:id', async (req, reply) => {
+      if (req.isAuthenticated()) {
+        const { id } = req.params;
+        const task = await models.task.query().findById(id);
+        const taskData = await getTaskData(models)(task);
+
+        reply.render('tasks/task', { task: taskData });
         return reply;
       }
 

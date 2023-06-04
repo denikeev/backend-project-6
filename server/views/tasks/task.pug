@@ -1,0 +1,26 @@
+extends ../layouts/application.pug
+
+block header
+  = task.name
+
+block content
+  .row.mt-5.p-5.shadow
+    .col-12.col-md-8.order-2.order-md-1 
+      .lead.fw-normal.mb-4= task.description
+    .col-12.col-md-4.border-start.px-3.order-1.order-md-2.mb-3.mb-md-0
+      .mb-2 
+        span.me-1.badge.bg-danger=task.statusName
+      .d-flex.flex-wrap.mb-3 
+        span.text-muted.me-2= t('views.tasks.author')
+        span= task.creatorName
+      .d-flex.flex-wrap.mb-3 
+        span.text-muted.me-2= t('views.tasks.executor')
+        span= task.executorName
+      .d-flex.flex-wrap.mb-3 
+        span.text-muted.me-2= t('views.tasks.creationDate')
+        span= task.createdAt
+      .d-flex.flex-wrap 
+        a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= t('views.actions.edit')
+        form(action=`/tasks/${task.id}` method='post') 
+          input(name='_method', type='hidden', value='delete')
+          input(class='btn btn-danger', type='submit', value=t('views.actions.delete'))

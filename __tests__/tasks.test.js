@@ -94,6 +94,23 @@ describe('test tasks CRUD', () => {
     expect(task).toMatchObject(params);
   });
 
+  it('view page', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: 'tasks/1',
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const responseWithAuthCookie = await app.inject({
+      method: 'GET',
+      url: 'tasks/1',
+      cookies: authCookie,
+    });
+
+    expect(responseWithAuthCookie.statusCode).toBe(200);
+  });
+
   afterAll(async () => {
     await app.close();
   });
