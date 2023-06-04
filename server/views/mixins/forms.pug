@@ -24,7 +24,7 @@ mixin input(entity, propertyName, errors = {})
 
 mixin select(entity, propertyName, text, errors = {})
   - propertyErrors = _.get(errors, propertyName)
-  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : 'is-invalid')
+  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - selectId = getInputId(propertyName)
   .mb-3 
     label(for= selectId)= text 

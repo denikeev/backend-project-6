@@ -67,6 +67,33 @@ describe('test tasks CRUD', () => {
     expect(responseWithAuthCookie.statusCode).toBe(200);
   });
 
+  it('create', async () => {
+    const params = testData.tasks.new;
+
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: authCookie,
+      payload: {
+        data: params,
+      },
+    });
+
+    const task = await models.task.query().findOne({ id: 1 });
+
+    expect(task).toMatchObject(params);
+  });
+
   afterAll(async () => {
     await app.close();
   });

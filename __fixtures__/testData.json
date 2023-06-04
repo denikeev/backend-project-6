@@ -31,5 +31,11 @@
     "notEdited": {
       "name": ""
     }
+  },
+  "tasks": {
+    "new": {
+      "name": "first task",
+      "statusId": 1
+    }
   }
 }
