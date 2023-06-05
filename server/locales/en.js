@@ -44,6 +44,10 @@ export default {
           success: 'Task was successfully created',
           error: 'Failed to create a task',
         },
+        edit: {
+          success: 'Task has been successfully changed',
+          error: 'Failed to change the task',
+        },
       },
       authError: 'Access denied! Please login',
     },
@@ -89,6 +93,7 @@ export default {
         author: 'Author',
         executor: 'Executor',
         creationDate: 'Creation date',
+        editTitle: 'Changing the task',
         new: {
           head: 'Creating a task',
           description: 'Description',

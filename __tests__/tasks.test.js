@@ -7,6 +7,7 @@ describe('test tasks CRUD', () => {
   let knex;
   let models;
   let authCookie;
+  const taskId = 1;
   const testData = getTestData();
 
   beforeAll(async () => {
@@ -97,18 +98,72 @@ describe('test tasks CRUD', () => {
   it('view page', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: 'tasks/1',
+      url: `tasks/${taskId}`,
     });
 
     expect(response.statusCode).toBe(302);
 
     const responseWithAuthCookie = await app.inject({
       method: 'GET',
-      url: 'tasks/1',
+      url: `tasks/${taskId}`,
       cookies: authCookie,
     });
 
     expect(responseWithAuthCookie.statusCode).toBe(200);
+  });
+
+  it('edit page', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: `tasks/${taskId}/edit`,
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const responseStatuses = await app.inject({
+      method: 'GET',
+      url: `tasks/${taskId}/edit`,
+      cookies: authCookie,
+    });
+
+    expect(responseStatuses.statusCode).toBe(200);
+  });
+
+  it('update', async () => {
+    const params = testData.tasks.edited;
+    const emptyParams = testData.tasks.empty;
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `tasks/${taskId}`,
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    await app.inject({
+      method: 'PATCH',
+      url: `tasks/${taskId}`,
+      cookies: authCookie,
+      payload: {
+        data: params,
+      },
+    });
+
+    await app.inject({
+      method: 'PATCH',
+      url: 'tasks/1',
+      cookies: authCookie,
+      payload: {
+        data: emptyParams,
+      },
+    });
+
+    const task = await models.task.query().findOne({ name: params.name });
+
+    expect(task).toMatchObject(params);
   });
 
   afterAll(async () => {

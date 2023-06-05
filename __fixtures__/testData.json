@@ -36,6 +36,13 @@
     "new": {
       "name": "first task",
       "statusId": 1
+    },
+    "edited": {
+      "name": "good first issue",
+      "statusId": 1
+    },
+    "empty": {
+      "name": ""
     }
   }
 }
