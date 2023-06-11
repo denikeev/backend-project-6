@@ -11,6 +11,7 @@ describe('test users CRUD', () => {
   let app;
   let knex;
   let models;
+  let authCookie;
   const testData = getTestData();
 
   beforeAll(async () => {
@@ -28,6 +29,18 @@ describe('test users CRUD', () => {
     // и заполняем БД тестовыми данными
     await knex.migrate.latest();
     await prepareData(app);
+
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: testData.users.existing,
+      },
+    });
+
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    authCookie = { [name]: value };
   });
 
   beforeEach(async () => {
@@ -80,22 +93,10 @@ describe('test users CRUD', () => {
 
     expect(response.statusCode).toBe(302);
 
-    const responseSignIn = await app.inject({
-      method: 'POST',
-      url: app.reverse('session'),
-      payload: {
-        data: testData.users.existing,
-      },
-    });
-
-    const [sessionCookie] = responseSignIn.cookies;
-    const { name, value } = sessionCookie;
-    const cookie = { [name]: value };
-
     const responseEditPage = await app.inject({
       method: 'GET',
       url: 'users/2/edit',
-      cookies: cookie,
+      cookies: authCookie,
     });
 
     expect(responseEditPage.statusCode).toBe(200);
@@ -188,34 +189,51 @@ describe('test users CRUD', () => {
   });
 
   it('delete', async () => {
-    const userId = { id: 2 };
+    const taskId = 1;
+    const createTaskParams = testData.tasks.new;
+    const userId = 2;
+    const user = await models.user.query().findById(userId);
+
+    await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: authCookie,
+      payload: {
+        data: createTaskParams,
+      },
+    });
+
     const response = await app.inject({
       method: 'DELETE',
-      url: `users/${userId.id}`,
+      url: `users/${userId}`,
     });
 
     expect(response.statusCode).toBe(302);
 
-    const responseSignIn = await app.inject({
-      method: 'POST',
-      url: app.reverse('session'),
-      payload: {
-        data: testData.users.existing,
-      },
+    await app.inject({
+      method: 'DELETE',
+      url: `users/${userId}`,
+      cookies: authCookie,
     });
 
-    const [sessionCookie] = responseSignIn.cookies;
-    const { name, value } = sessionCookie;
-    const cookie = { [name]: value };
+    let actualUser = await models.user.query().findById(userId);
+
+    expect(actualUser).toStrictEqual(user);
 
     await app.inject({
       method: 'DELETE',
-      url: `users/${userId.id}`,
-      cookies: cookie,
+      url: `tasks/${taskId}`,
+      cookies: authCookie,
     });
 
-    const user = await models.user.query().findOne({ ...userId });
-    expect(user).toBeUndefined();
+    await app.inject({
+      method: 'DELETE',
+      url: `users/${userId}`,
+      cookies: authCookie,
+    });
+
+    actualUser = await models.user.query().findById(userId);
+    expect(actualUser).toBeUndefined();
   });
 
   afterEach(async () => {

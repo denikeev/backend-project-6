@@ -150,6 +150,19 @@ describe('test statuses CRUD', () => {
   });
 
   it('delete', async () => {
+    const taskId = 1;
+    const createTaskParams = testData.tasks.new;
+    const status = await models.status.query().findById(id);
+
+    await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: authCookie,
+      payload: {
+        data: createTaskParams,
+      },
+    });
+
     const response = await app.inject({
       method: 'DELETE',
       url: `statuses/${id}`,
@@ -163,8 +176,23 @@ describe('test statuses CRUD', () => {
       cookies: authCookie,
     });
 
-    const status = await models.status.query().findById({ id: 1 });
-    expect(status).toBeUndefined();
+    let actualStatus = await models.status.query().findById(id);
+    expect(actualStatus).toStrictEqual(status);
+
+    await app.inject({
+      method: 'DELETE',
+      url: `tasks/${taskId}`,
+      cookies: authCookie,
+    });
+
+    await app.inject({
+      method: 'DELETE',
+      url: `statuses/${id}`,
+      cookies: authCookie,
+    });
+
+    actualStatus = await models.status.query().findById(id);
+    expect(actualStatus).toBeUndefined();
   });
 
   afterAll(async () => {

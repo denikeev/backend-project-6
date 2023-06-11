@@ -20,6 +20,7 @@ export default {
         },
         delete: {
           success: 'User has been successfully deleted',
+          failed: 'Failed to delete user',
         },
         edit: {
           noAccess: 'You cannot edit or delete another user',
@@ -37,6 +38,7 @@ export default {
         },
         delete: {
           success: 'Status successfully deleted',
+          failed: 'Failed to delete status',
         },
       },
       tasks: {
@@ -47,6 +49,10 @@ export default {
         edit: {
           success: 'Task has been successfully changed',
           error: 'Failed to change the task',
+        },
+        delete: {
+          success: 'Task was successfully deleted',
+          error: 'Task can be deleted only by its author',
         },
       },
       authError: 'Access denied! Please login',

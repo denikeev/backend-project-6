@@ -140,5 +140,24 @@ export default (app) => {
       req.flash('error', i18next.t('flash.authError'));
       reply.redirect(app.reverse('root'));
       return reply;
+    })
+    .delete('/tasks/:id', async (req, reply) => {
+      const { id } = req.params;
+
+      if (req.isAuthenticated()) {
+        const task = await app.objection.models.task.query().findById(id);
+
+        if (req.user.id === task.creatorId) {
+          await app.objection.models.task.query().deleteById(id);
+          req.flash('info', i18next.t('flash.tasks.delete.success'));
+          reply.redirect(app.reverse('tasks'));
+        }
+
+        req.flash('error', i18next.t('flash.tasks.delete.error'));
+        reply.redirect(app.reverse('tasks'));
+      } else {
+        req.flash('error', i18next.t('flash.authError'));
+        reply.redirect(app.reverse('root'));
+      }
     });
 };

@@ -3,19 +3,21 @@
 import i18next from 'i18next';
 
 export default (app) => {
+  const { models } = app.objection;
+
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
-      const users = await app.objection.models.user.query();
+      const users = await models.user.query();
       reply.render('users/index', { users });
       return reply;
     })
     .get('/users/new', { name: 'newUser' }, (req, reply) => {
-      const user = new app.objection.models.user();
+      const user = new models.user();
       reply.render('users/new', { user });
     })
     .get('/users/:id/edit', async (req, reply) => {
       const { id } = req.params;
-      const user = await app.objection.models.user.query().findOne({ id });
+      const user = await models.user.query().findOne({ id });
 
       if (req.isAuthenticated()) {
         if (req.user.id === Number(id)) {
@@ -33,12 +35,12 @@ export default (app) => {
       return reply;
     })
     .post('/users', async (req, reply) => {
-      const user = new app.objection.models.user();
+      const user = new models.user();
       user.$set(req.body.data);
 
       try {
-        const validUser = await app.objection.models.user.fromJson(req.body.data);
-        await app.objection.models.user.query().insert(validUser);
+        const validUser = await models.user.fromJson(req.body.data);
+        await models.user.query().insert(validUser);
         req.flash('info', i18next.t('flash.users.create.success'));
         reply.redirect(app.reverse('root'));
       } catch ({ data }) {
@@ -50,7 +52,7 @@ export default (app) => {
     })
     .patch('/users/:id', async (req, reply) => {
       const { id } = req.params;
-      const user = await app.objection.models.user.query().findOne({ id });
+      const user = await models.user.query().findOne({ id });
 
       if (req.user.id === Number(id)) {
         try {
@@ -74,10 +76,18 @@ export default (app) => {
 
       if (req.isAuthenticated()) {
         if (req.user.id === Number(id)) {
-          req.logOut();
-          await app.objection.models.user.query().deleteById(id);
-          req.flash('info', i18next.t('flash.users.delete.success'));
-          reply.redirect(app.reverse('root'));
+          const userTasks = await models.task.query()
+            .where({ executor_id: id });
+
+          if (userTasks.length === 0) {
+            req.logOut();
+            await models.user.query().deleteById(id);
+            req.flash('info', i18next.t('flash.users.delete.success'));
+            reply.redirect(app.reverse('root'));
+          }
+
+          req.flash('error', i18next.t('flash.users.delete.failed'));
+          reply.redirect(app.reverse('users'));
         }
 
         req.flash('error', i18next.t('flash.users.edit.noAccess'));

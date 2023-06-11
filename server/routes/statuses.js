@@ -1,10 +1,12 @@
 import i18next from 'i18next';
 
 export default (app) => {
+  const { models } = app.objection;
+
   app
     .get('/statuses', { name: 'statuses' }, async (req, reply) => {
       if (req.isAuthenticated()) {
-        const statuses = await app.objection.models.status.query();
+        const statuses = await models.status.query();
         reply.render('statuses/index', { statuses });
         return reply;
       }
@@ -15,7 +17,7 @@ export default (app) => {
     })
     .get('/statuses/new', { name: 'newStatus' }, (req, reply) => {
       if (req.isAuthenticated()) {
-        const status = new app.objection.models.status();
+        const status = new models.status();
         reply.render('statuses/new', { status });
         return reply;
       }
@@ -27,7 +29,7 @@ export default (app) => {
     .get('/statuses/:id/edit', async (req, reply) => {
       if (req.isAuthenticated()) {
         const { id } = req.params;
-        const status = await app.objection.models.status.query().findOne({ id });
+        const status = await models.status.query().findOne({ id });
         reply.render('statuses/edit', { status });
         return reply;
       }
@@ -38,12 +40,12 @@ export default (app) => {
     })
     .post('/statuses', async (req, reply) => {
       if (req.isAuthenticated()) {
-        const status = new app.objection.models.status();
+        const status = new models.status();
         status.$set(req.body.data);
 
         try {
-          const validStatus = await app.objection.models.status.fromJson(req.body.data);
-          await app.objection.models.status.query().insert(validStatus);
+          const validStatus = await models.status.fromJson(req.body.data);
+          await models.status.query().insert(validStatus);
           req.flash('info', i18next.t('flash.statuses.create.success'));
           reply.redirect(app.reverse('statuses'));
         } catch ({ data }) {
@@ -61,7 +63,7 @@ export default (app) => {
     .patch('/statuses/:id', async (req, reply) => {
       if (req.isAuthenticated()) {
         const { id } = req.params;
-        const status = await app.objection.models.status.query().findOne({ id });
+        const status = await models.status.query().findOne({ id });
 
         try {
           await status.$query().update(req.body.data);
@@ -82,11 +84,17 @@ export default (app) => {
     .delete('/statuses/:id', async (req, reply) => {
       if (req.isAuthenticated()) {
         const { id } = req.params;
-        await app.objection.models.status.query().deleteById(id);
-        req.flash('info', i18next.t('flash.statuses.delete.success'));
-        reply.redirect(app.reverse('statuses'));
+        const currentTasks = await models.task.query()
+          .where({ status_id: id });
 
-        return reply;
+        if (currentTasks.length === 0) {
+          await models.status.query().deleteById(id);
+          req.flash('info', i18next.t('flash.statuses.delete.success'));
+          reply.redirect(app.reverse('statuses'));
+        }
+
+        req.flash('error', i18next.t('flash.statuses.delete.failed'));
+        reply.redirect(app.reverse('statuses'));
       }
 
       req.flash('error', i18next.t('flash.authError'));

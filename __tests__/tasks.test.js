@@ -166,6 +166,46 @@ describe('test tasks CRUD', () => {
     expect(task).toMatchObject(params);
   });
 
+  it('delete', async () => {
+    const task = await models.task.query().findById(taskId);
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `tasks/${taskId}`,
+    });
+
+    expect(response.headers.location).toBe('/');
+
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: testData.users.existingSecond,
+      },
+    });
+
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const otherAuthCookie = { [name]: value };
+
+    await app.inject({
+      method: 'DELETE',
+      url: `tasks/${taskId}`,
+      cookies: otherAuthCookie,
+    });
+
+    let actualTask = await models.task.query().findById(taskId);
+    expect(actualTask).toStrictEqual(task);
+
+    await app.inject({
+      method: 'DELETE',
+      url: `tasks/${taskId}`,
+      cookies: authCookie,
+    });
+
+    actualTask = await models.task.query().findById(taskId);
+    expect(actualTask).toBeUndefined();
+  });
+
   afterAll(async () => {
     await app.close();
   });
