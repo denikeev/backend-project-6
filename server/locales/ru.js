@@ -66,12 +66,14 @@ export default {
         signOut: 'Выход',
         statuses: 'Статусы',
         tasks: 'Задачи',
+        labels: 'Метки',
       },
     },
     views: {
       common: {
         id: 'ID',
         name: 'Наименование',
+        createdAt: 'Дата создания',
       },
       actions: {
         delete: 'Удалить',
@@ -86,7 +88,6 @@ export default {
       },
       users: {
         email: 'Email',
-        createdAt: 'Дата создания',
         head: 'Действия',
         new: {
           submit: 'Сохранить',
@@ -100,7 +101,6 @@ export default {
         status: 'Статус',
         author: 'Автор',
         executor: 'Исполнитель',
-        creationDate: 'Дата создания',
         editTitle: 'Изменение задачи',
         new: {
           head: 'Создание задачи',
@@ -112,7 +112,6 @@ export default {
       },
       statuses: {
         name: 'Наименование',
-        createdAt: 'Дата создания',
         head: 'Действия',
         actions: {
           createStatus: 'Создать статус',
@@ -123,6 +122,9 @@ export default {
         edit: {
           title: 'Изменение статуса',
         },
+      },
+      labels: {
+        createLabel: 'Создать метку',
       },
       welcome: {
         index: {

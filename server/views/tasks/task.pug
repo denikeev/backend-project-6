@@ -17,7 +17,7 @@ block content
         span.text-muted.me-2= t('views.tasks.executor')
         span= task.executorName
       .d-flex.flex-wrap.mb-3 
-        span.text-muted.me-2= t('views.tasks.creationDate')
+        span.text-muted.me-2= t('views.common.createdAt')
         span= task.createdAt
       .d-flex.flex-wrap 
         a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= t('views.actions.edit')

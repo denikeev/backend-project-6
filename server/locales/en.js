@@ -65,12 +65,14 @@ export default {
         signOut: 'Logout',
         statuses: 'Statuses',
         tasks: 'Tasks',
+        labels: 'Labels',
       },
     },
     views: {
       common: {
         id: 'ID',
         name: 'Name',
+        createdAt: 'Created at',
       },
       actions: {
         delete: 'Delete',
@@ -84,7 +86,6 @@ export default {
       },
       users: {
         email: 'Email',
-        createdAt: 'Created at',
         head: 'Actions',
         new: {
           submit: 'Register',
@@ -98,7 +99,6 @@ export default {
         status: 'Status',
         author: 'Author',
         executor: 'Executor',
-        creationDate: 'Creation date',
         editTitle: 'Changing the task',
         new: {
           head: 'Creating a task',
@@ -109,7 +109,6 @@ export default {
         },
       },
       statuses: {
-        createdAt: 'Created at',
         head: 'Actions',
         actions: {
           createStatus: 'Create a status',
@@ -118,6 +117,9 @@ export default {
         new: {
           head: 'Creating a status',
         },
+      },
+      labels: {
+        createLabel: 'Create label',
       },
       welcome: {
         index: {

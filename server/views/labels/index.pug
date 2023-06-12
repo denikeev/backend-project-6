@@ -1,10 +1,10 @@
 extends ../layouts/application.pug
 
 block header
-  = t('layouts.application.statuses')
+  = t('layouts.application.labels')
 
 block content
-  a.btn.btn-primary.mb-5(href=route('newStatus'))= t('views.statuses.actions.createStatus')
+  a.btn.btn-primary.mb-5(href='/labels/new')= t('views.labels.createLabel')
   .table-responsive
     table.table.table-borderless.table-striped.bg-white
       thead 
@@ -12,15 +12,15 @@ block content
           th= t('views.common.id')
           th= t('views.common.name')
           th= t('views.common.createdAt')
-          th= t('views.statuses.head')
+          th
       tbody
-        each status in statuses
+        each label in labels
           tr 
-            td= status.id
-            td= status.name
-            td= formatDate(status.createdAt)
+            td= label.id
+            td= label.name
+            td= formatDate(label.createdAt)
             td.d-flex.flex-wrap
-              a.btn.btn-primary.me-1(href=`/statuses/${status.id}/edit`)= t('views.actions.edit')
-              form(action=`statuses/${status.id}` method='post') 
+              a.btn.btn-primary.me-1(href=`/labels/${label.id}/edit`)= t('views.actions.edit')
+              form(action=`labels/${label.id}` method='post') 
                 input(name='_method', type='hidden', value='delete')
                 input(class='btn btn-danger', type='submit', value=t('views.actions.delete'))
