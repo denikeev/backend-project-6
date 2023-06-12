@@ -4,7 +4,7 @@ block header
   = t('layouts.application.labels')
 
 block content
-  a.btn.btn-primary.mb-5(href='/labels/new')= t('views.labels.createLabel')
+  a.btn.btn-primary.mb-5(href=route('newLabel'))= t('views.labels.createLabel')
   .table-responsive
     table.table.table-borderless.table-striped.bg-white
       thead 

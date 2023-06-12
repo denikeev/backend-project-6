@@ -56,6 +56,16 @@ export default {
           error: 'Задачу может удалить только её автор',
         },
       },
+      labels: {
+        create: {
+          success: 'Метка успешно создана',
+          error: 'Не удалось создать метку',
+        },
+        edit: {
+          success: 'Метка успешно изменена',
+          failed: 'Не удалось изменить метку',
+        },
+      },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
     layouts: {
@@ -125,6 +135,8 @@ export default {
       },
       labels: {
         createLabel: 'Создать метку',
+        newHead: 'Создание метки',
+        editTitle: 'Изменение метки',
       },
       welcome: {
         index: {

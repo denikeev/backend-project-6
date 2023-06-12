@@ -45,5 +45,13 @@
     "empty": {
       "name": ""
     }
+  },
+  "labels": {
+    "new": {
+      "name": "enhancement"
+    },
+    "edited": {
+      "name": "documentation"
+    }
   }
 }

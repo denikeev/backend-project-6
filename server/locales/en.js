@@ -55,6 +55,16 @@ export default {
           error: 'Task can be deleted only by its author',
         },
       },
+      labels: {
+        create: {
+          success: 'Label was successfully created',
+          error: 'Failed to create a label',
+        },
+        edit: {
+          success: 'Label was successfully changed',
+          failed: 'Unable to change label',
+        },
+      },
       authError: 'Access denied! Please login',
     },
     layouts: {
@@ -120,6 +130,8 @@ export default {
       },
       labels: {
         createLabel: 'Create label',
+        newHead: 'Creating a label',
+        editTitle: 'Label change',
       },
       welcome: {
         index: {
