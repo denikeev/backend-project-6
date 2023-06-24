@@ -156,12 +156,29 @@ export default (app) => {
         const statuses = await models.status.query();
         const users = await models.user.query();
         const processedData = handleTaskCreation(req.body.data, task.creatorId);
+        const hasLabel = Object.hasOwn(processedData, 'labels');
         task.$set(processedData);
 
         try {
-          await task.$query().update(processedData);
-          req.flash('info', i18next.t('flash.tasks.edit.success'));
-          reply.redirect(app.reverse('tasks'));
+          if (hasLabel) {
+            await models.task.transaction(async (trx) => {
+              const insertData = {
+                id: Number(id),
+                ...processedData,
+                labels: handleLabelsData(processedData),
+              };
+              const insertedData = await models.task.query(trx).upsertGraph(insertData, { relate: ['labels'], unrelate: ['labels'] });
+
+              return insertedData;
+            });
+
+            req.flash('info', i18next.t('flash.tasks.edit.success'));
+            reply.redirect(app.reverse('tasks'));
+          } else {
+            await task.$query().update(processedData);
+            req.flash('info', i18next.t('flash.tasks.edit.success'));
+            reply.redirect(app.reverse('tasks'));
+          }
         } catch ({ data }) {
           req.flash('error', i18next.t('flash.tasks.create.error'));
           reply.render('tasks/edit', {
