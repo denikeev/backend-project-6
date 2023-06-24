@@ -23,6 +23,16 @@ const handleTaskCreation = (data, creatorId) => {
   ), {});
 };
 
+const handleLabelsData = (data) => {
+  let { labels } = data;
+
+  if (typeof labels === 'string') {
+    labels = [labels];
+  }
+
+  return labels.map((id) => ({ id: Number(id) }));
+};
+
 export default (app) => {
   const { models } = app.objection;
 
@@ -48,8 +58,14 @@ export default (app) => {
         const task = new models.task();
         const statuses = await models.status.query();
         const users = await models.user.query();
+        const labels = await models.label.query();
 
-        reply.render('tasks/new', { task, statuses, users });
+        reply.render('tasks/new', {
+          task,
+          statuses,
+          users,
+          labels,
+        });
         return reply;
       }
 
@@ -60,7 +76,7 @@ export default (app) => {
     .get('/tasks/:id', async (req, reply) => {
       if (req.isAuthenticated()) {
         const { id } = req.params;
-        const task = await models.task.query().findById(id);
+        const task = await models.task.query().findById(id).withGraphFetched('labels');
         const taskData = await getTaskData(models)(task);
 
         reply.render('tasks/task', { task: taskData });
@@ -77,8 +93,14 @@ export default (app) => {
         const task = await models.task.query().findOne({ id });
         const statuses = await models.status.query();
         const users = await models.user.query();
+        const labels = await models.label.query();
 
-        reply.render('tasks/edit', { task, statuses, users });
+        reply.render('tasks/edit', {
+          task,
+          statuses,
+          users,
+          labels,
+        });
         return reply;
       }
 
@@ -93,13 +115,26 @@ export default (app) => {
         const users = await models.user.query();
         const creatorId = Number(req.user.id);
         const processedData = handleTaskCreation(req.body.data, creatorId);
+        const hasLabel = Object.hasOwn(processedData, 'labels');
         task.$set(processedData);
 
         try {
-          const validTask = await models.task.fromJson(processedData);
-          await models.task.query().insert(validTask);
-          req.flash('info', i18next.t('flash.tasks.create.success'));
-          reply.redirect(app.reverse('tasks'));
+          if (hasLabel) {
+            await models.task.transaction(async (trx) => {
+              const insertData = { ...processedData, labels: handleLabelsData(processedData) };
+              const insertedData = await models.task.query(trx).insertGraph(insertData, { relate: ['labels'] });
+
+              return insertedData;
+            });
+
+            req.flash('info', i18next.t('flash.tasks.create.success'));
+            reply.redirect(app.reverse('tasks'));
+          } else {
+            const validTask = await models.task.fromJson(processedData);
+            await models.task.query().insert(validTask);
+            req.flash('info', i18next.t('flash.tasks.create.success'));
+            reply.redirect(app.reverse('tasks'));
+          }
         } catch ({ data }) {
           req.flash('error', i18next.t('flash.tasks.create.error'));
           reply.render('tasks/new', {

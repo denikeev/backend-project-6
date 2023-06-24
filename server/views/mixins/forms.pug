@@ -33,7 +33,6 @@ mixin select(entity, propertyName, text, errors = {})
       name=getInputName(propertyName)
       class=classLine
     )&attributes(attributes)
-      option
       block
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')

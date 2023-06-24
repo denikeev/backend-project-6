@@ -15,5 +15,8 @@ block content
       each user in users
         - isDefault = user.id === task.executorId
         option(value=user.id selected=isDefault ? 'selected' : false) #{user.firstName} #{user.lastName}
+    +select(labels, 'labels', t('layouts.application.labels'))(multiple)
+      each label in labels 
+        option(value=label.id)= label.name
     input(name='_method', type='hidden', value='patch')
     +submit(task)(value=t('views.actions.edit'))

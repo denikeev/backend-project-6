@@ -1,6 +1,7 @@
 const BaseModel = require('./BaseModel.cjs');
 const Status = require('./Status.cjs');
 const User = require('./User.cjs');
+const Label = require('./Label.cjs');
 
 module.exports = class Task extends BaseModel {
   static get tableName() {
@@ -38,6 +39,18 @@ module.exports = class Task extends BaseModel {
         join: {
           from: ['tasks.creatorId', 'tasks.executorId'],
           to: 'users.id',
+        },
+      },
+      labels: {
+        relation: BaseModel.ManyToManyRelation,
+        modelClass: Label,
+        join: {
+          from: 'tasks.id',
+          through: {
+            from: 'task_labels.taskId',
+            to: 'task_labels.labelId',
+          },
+          to: 'labels.id',
         },
       },
     };
