@@ -139,6 +139,52 @@ describe('test labels CRUD', () => {
     expect(label).toMatchObject(params);
   });
 
+  it('delete', async () => {
+    const taskId = 1;
+    const createTaskParams = testData.tasks.newWithLabel;
+    const label = await models.label.query().findById(labelId);
+
+    await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: authCookie,
+      payload: {
+        data: createTaskParams,
+      },
+    });
+
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `labels/${labelId}`,
+    });
+
+    expect(response.headers.location).toBe('/');
+
+    await app.inject({
+      method: 'DELETE',
+      url: `labels/${labelId}`,
+      cookies: authCookie,
+    });
+
+    let actualLabel = await models.label.query().findById(labelId);
+    expect(actualLabel).toStrictEqual(label);
+
+    await app.inject({
+      method: 'DELETE',
+      url: `tasks/${taskId}`,
+      cookies: authCookie,
+    });
+
+    await app.inject({
+      method: 'DELETE',
+      url: `labels/${labelId}`,
+      cookies: authCookie,
+    });
+
+    actualLabel = await models.label.query().findById(labelId);
+    expect(actualLabel).toBeUndefined();
+  });
+
   afterAll(async () => {
     await app.close();
   });

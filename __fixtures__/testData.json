@@ -38,6 +38,11 @@
       "statusId": 1,
       "executorId": 2
     },
+    "newWithLabel": {
+      "name": "first task",
+      "statusId": 1,
+      "labels": "1"
+    },
     "edited": {
       "name": "good first issue",
       "statusId": 1

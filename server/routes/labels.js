@@ -76,5 +76,22 @@ export default (app) => {
       }
 
       return handleAuthError(req, reply);
+    })
+    .delete('/labels/:id', async (req, reply) => {
+      if (req.isAuthenticated()) {
+        const { id } = req.params;
+        const label = await models.label.query().findById(id).withGraphFetched('tasks');
+
+        if (label.tasks.length === 0) {
+          await models.label.query().deleteById(id);
+          req.flash('info', i18next.t('flash.labels.delete.success'));
+          reply.redirect(app.reverse('labels'));
+        }
+
+        req.flash('error', i18next.t('flash.labels.delete.failed'));
+        reply.redirect(app.reverse('labels'));
+      }
+
+      return handleAuthError(req, reply);
     });
 };

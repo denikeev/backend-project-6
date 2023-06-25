@@ -8,7 +8,7 @@ describe('test statuses CRUD', () => {
   let models;
   let authCookie;
   const testData = getTestData();
-  const id = 1;
+  const statusId = 1;
 
   beforeAll(async () => {
     app = fastify({
@@ -98,14 +98,14 @@ describe('test statuses CRUD', () => {
   it('edit', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: `statuses/${id}/edit`,
+      url: `statuses/${statusId}/edit`,
     });
 
     expect(response.statusCode).toBe(302);
 
     const responseStatuses = await app.inject({
       method: 'GET',
-      url: `statuses/${id}/edit`,
+      url: `statuses/${statusId}/edit`,
       cookies: authCookie,
     });
 
@@ -118,7 +118,7 @@ describe('test statuses CRUD', () => {
 
     const response = await app.inject({
       method: 'PATCH',
-      url: `statuses/${id}`,
+      url: `statuses/${statusId}`,
       payload: {
         data: params,
       },
@@ -128,7 +128,7 @@ describe('test statuses CRUD', () => {
 
     await app.inject({
       method: 'PATCH',
-      url: `statuses/${id}`,
+      url: `statuses/${statusId}`,
       cookies: authCookie,
       payload: {
         data: params,
@@ -137,7 +137,7 @@ describe('test statuses CRUD', () => {
 
     await app.inject({
       method: 'PATCH',
-      url: `statuses/${id}`,
+      url: `statuses/${statusId}`,
       cookies: authCookie,
       payload: {
         data: paramsEmptyName,
@@ -152,7 +152,7 @@ describe('test statuses CRUD', () => {
   it('delete', async () => {
     const taskId = 1;
     const createTaskParams = testData.tasks.new;
-    const status = await models.status.query().findById(id);
+    const status = await models.status.query().findById(statusId);
 
     await app.inject({
       method: 'POST',
@@ -165,18 +165,18 @@ describe('test statuses CRUD', () => {
 
     const response = await app.inject({
       method: 'DELETE',
-      url: `statuses/${id}`,
+      url: `statuses/${statusId}`,
     });
 
     expect(response.headers.location).toBe('/');
 
     await app.inject({
       method: 'DELETE',
-      url: `statuses/${id}`,
+      url: `statuses/${statusId}`,
       cookies: authCookie,
     });
 
-    let actualStatus = await models.status.query().findById(id);
+    let actualStatus = await models.status.query().findById(statusId);
     expect(actualStatus).toStrictEqual(status);
 
     await app.inject({
@@ -187,11 +187,11 @@ describe('test statuses CRUD', () => {
 
     await app.inject({
       method: 'DELETE',
-      url: `statuses/${id}`,
+      url: `statuses/${statusId}`,
       cookies: authCookie,
     });
 
-    actualStatus = await models.status.query().findById(id);
+    actualStatus = await models.status.query().findById(statusId);
     expect(actualStatus).toBeUndefined();
   });
 

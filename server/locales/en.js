@@ -64,6 +64,10 @@ export default {
           success: 'Label was successfully changed',
           failed: 'Unable to change label',
         },
+        delete: {
+          success: 'Label successfully deleted',
+          failed: 'Failed to remove label',
+        },
       },
       authError: 'Access denied! Please login',
     },
